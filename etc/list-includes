@@ -1,0 +1,27 @@
+#!/usr/bin/python2.7
+
+import argparse
+import os
+import subprocess
+import sys
+
+def get_includes_for(pkg):
+    p = subprocess.Popen(
+        ['pkg-config', pkg, '--cflags'],
+        stdout=subprocess.PIPE)
+    (out, err) = p.communicate()
+    directs = out.split(' ')
+    return [x[2:].strip() for x in directs if x.startswith('-I')]
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('packages',
+        nargs='+',
+        help="packages to list includes for")
+    args = parser.parse_args()
+    for pkg in args.packages:
+        for inc in get_includes_for(pkg):
+            print(inc)
+
+if __name__ == '__main__':
+    sys.exit(main())
