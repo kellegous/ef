@@ -6,7 +6,7 @@ ALL: efa
 %.o: %.cc %.h
 	g++ $(CFLAGS) -c -o $@ $<
 
-efa: efa.o point.o vec2.o
+efa: efa.o point.o vec2.o charge.o
 	g++ $(LDFLAGS) -o $@ $^
 
 clean:
