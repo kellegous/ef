@@ -1,6 +1,8 @@
 #include "charge.h"
 
 #include <cairomm/cairomm.h>
+#include <iostream>
+#include <libgen.h>
 #include <memory>
 #include <random>
 #include <vector>
@@ -55,7 +57,9 @@ int main(int argc, char* argv[]) {
         context->fill();
     }
 
-    surface->write_to_png("out.png");
+    std::string dst(basename(argv[0]));
+    dst.append(".png");
+    surface->write_to_png(dst.c_str());
 
     return 0;
 }

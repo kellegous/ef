@@ -1,2 +1,4 @@
 efa
 *.o
+/color
+/pkg

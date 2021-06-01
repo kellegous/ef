@@ -1,0 +1,64 @@
+#!/usr/bin/env python2.7
+
+import argparse
+import json
+import os
+import subprocess
+import sys
+
+def get_includes_for(pkg):
+    p = subprocess.Popen(
+        ['pkg-config', pkg, '--cflags'],
+        stdout=subprocess.PIPE)
+    (out, err) = p.communicate()
+    directs = out.split(' ')
+    return [x[2:].strip() for x in directs if x.startswith('-I')]
+
+class Config(object):
+    def __init__(self, data):
+        self.data = data
+    
+    def set_includes(self, includes):
+        for config in self.data.get('configurations'):
+            config[u'includePath'] = [u'${workspaceFolder}/**'] + includes
+
+    def write(self, filename):
+        with open(filename, 'w') as w:
+            json.dump(self.data, w, indent=4)
+
+def read_config(filename):
+    with open(filename, 'r') as r:
+        return Config(json.load(r))
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        'packages',
+        nargs='+',
+        help="packages to include")
+    parser.add_argument(
+        '--config-file',
+        default='.vscode/c_cpp_properties.json',
+        help="path to vscode properties file")
+    parser.add_argument(
+        '--dry-run',
+        default=False,
+        action='store_true',
+        help="whether to print the results rather than writing them")
+    args = parser.parse_args()
+
+    includes = set()
+    for pkg in args.packages:
+        for inc in get_includes_for(pkg):
+            includes.add(inc)
+    includes = sorted([unicode(x, 'utf-8') for x in includes])
+
+    config = read_config(args.config_file)
+    config.set_includes(includes)
+    if args.dry_run:
+        print(json.dumps(config.data, indent=4))
+    else:
+        config.write(args.config_file)
+
+if __name__ == '__main__':
+    sys.exit(main())

@@ -1,49 +1,48 @@
 {
+    "version": 4, 
     "configurations": [
         {
-            "name": "Mac",
-            "includePath": [
-                "${workspaceFolder}/**",
-                "/usr/local/Cellar/libffi/3.3_3/include",
-                "/usr/local/Cellar/cairomm/1.16.0/include/cairomm-1.16",
-                "/usr/local/Cellar/cairomm/1.16.0/lib/cairomm-1.16/include",
-                "/usr/local/Cellar/libsigc++/3.0.7/include/sigc++-3.0",
-                "/usr/local/Cellar/libsigc++/3.0.7/lib/sigc++-3.0/include",
-                "/usr/local/Cellar/cairo/1.16.0_5/include/cairo",
-                "/usr/local/Cellar/glib/2.68.2/include",
-                "/usr/local/Cellar/glib/2.68.2/include/glib-2.0",
-                "/usr/local/Cellar/glib/2.68.2/lib/glib-2.0/include",
-                "/usr/local/opt/gettext/include",
-                "/usr/local/Cellar/pcre/8.44/include",
-                "/usr/local/Cellar/pixman/0.40.0/include/pixman-1",
-                "/usr/local/Cellar/fontconfig/2.13.1/include",
-                "/usr/local/opt/freetype/include/freetype2",
-                "/usr/local/Cellar/libpng/1.6.37/include/libpng16",
-                "/usr/local/Cellar/libxcb/1.14_1/include",
-                "/usr/local/Cellar/libxrender/0.9.10/include",
-                "/usr/local/Cellar/libxext/1.3.4/include",
-                "/usr/local/Cellar/libx11/1.7.1/include",
-                "/usr/local/Cellar/libxcb/1.14_1/include",
-                "/usr/local/Cellar/libxau/1.0.9/include",
-                "/usr/local/Cellar/libxdmcp/1.1.3/include",
-                "/usr/local/Cellar/xorgproto/2021.4/include"
-            ],
-            "defines": [],
-            "macFrameworkPath": [],
-            "compilerPath": "/usr/local/bin/gcc-11",
-            "cStandard": "gnu17",
-            "cppStandard": "gnu++17",
-            "intelliSenseMode": "macos-gcc-x64",
+            "macFrameworkPath": [], 
+            "intelliSenseMode": "macos-gcc-x64", 
+            "name": "Mac", 
+            "cppStandard": "gnu++17", 
             "compilerArgs": [
                 "--std=c++17"
-            ],
+            ], 
+            "cStandard": "gnu17", 
+            "compilerPath": "/usr/local/bin/gcc-11", 
             "browse": {
                 "path": [
                     "${workspaceFolder}/**"
-                ],
+                ], 
                 "limitSymbolsToIncludedHeaders": true
-            }
+            }, 
+            "includePath": [
+                "${workspaceFolder}/**", 
+                "/usr/local/Cellar/cairo/1.16.0_5/include/cairo", 
+                "/usr/local/Cellar/cairomm/1.16.1/include/cairomm-1.16", 
+                "/usr/local/Cellar/cairomm/1.16.1/lib/cairomm-1.16/include", 
+                "/usr/local/Cellar/fontconfig/2.13.1/include", 
+                "/usr/local/Cellar/glib/2.68.2/include", 
+                "/usr/local/Cellar/glib/2.68.2/include/glib-2.0", 
+                "/usr/local/Cellar/glib/2.68.2/lib/glib-2.0/include", 
+                "/usr/local/Cellar/libffi/3.3_3/include", 
+                "/usr/local/Cellar/libpng/1.6.37/include/libpng16", 
+                "/usr/local/Cellar/libsigc++/3.0.7/include/sigc++-3.0", 
+                "/usr/local/Cellar/libsigc++/3.0.7/lib/sigc++-3.0/include", 
+                "/usr/local/Cellar/libx11/1.7.1/include", 
+                "/usr/local/Cellar/libxau/1.0.9/include", 
+                "/usr/local/Cellar/libxcb/1.14_1/include", 
+                "/usr/local/Cellar/libxdmcp/1.1.3/include", 
+                "/usr/local/Cellar/libxext/1.3.4/include", 
+                "/usr/local/Cellar/libxrender/0.9.10/include", 
+                "/usr/local/Cellar/pcre/8.44/include", 
+                "/usr/local/Cellar/pixman/0.40.0/include/pixman-1", 
+                "/usr/local/Cellar/xorgproto/2021.4/include", 
+                "/usr/local/opt/freetype/include/freetype2", 
+                "/usr/local/opt/gettext/include"
+            ], 
+            "defines": []
         }
-    ],
-    "version": 4
+    ]
 }
