@@ -34,7 +34,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'packages',
-        nargs='+',
+        nargs='*',
+        default=['cairomm-1.16', 'grpc', 'protobuf'],
         help="packages to include")
     parser.add_argument(
         '--config-file',
@@ -46,6 +47,8 @@ def main():
         action='store_true',
         help="whether to print the results rather than writing them")
     args = parser.parse_args()
+
+    os.environ['PKG_CONFIG_PATH'] = '/usr/local/opt/openssl/lib/pkgconfig'
 
     includes = set()
     for pkg in args.packages:

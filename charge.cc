@@ -13,15 +13,15 @@ Charge::Charge(
     double c): _point(point), _c(c) {
 }
 
-Vec2 Charge::point() {
+Vec2 Charge::point() const {
     return _point;
 }
 
-double Charge::c() {
+double Charge::c() const {
     return _c;
 }
 
-std::string Charge::description() {
+std::string Charge::description() const {
     std::ostringstream ss;
     ss << "i = " << _point.i() << ", ";
     ss << "j = " << _point.j() << ", ";

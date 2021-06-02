@@ -13,9 +13,9 @@ public:
     // Disallow copy
     Charge(const Charge&);
 
-    Vec2 point();
-    double c();
-    std::string description();
+    Vec2 point() const;
+    double c() const;
+    std::string description() const;
 private:
     Vec2 _point;
     double _c;

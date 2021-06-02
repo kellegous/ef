@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-double Vec2::length() {
+double Vec2::length() const {
     return sqrt(_i*_i + _j*_j);
 }
 

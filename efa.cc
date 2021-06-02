@@ -107,6 +107,34 @@ private:
     std::unique_ptr<rpc::Colors::Stub> stub_;
 };
 
+void ComputeFieldLine(
+    std::vector<Vec2>* path,
+    const Charge& charge,
+    const Vec2& start,
+    const std::vector<std::shared_ptr<Charge>>& charges) {
+    path->clear();
+
+    Vec2 curr(start);
+    path->push_back(curr);
+    for (auto k = 0; k < 1000; k++) {
+        Vec2 dir = Vec2::origin();
+        for (auto c : charges) {
+            auto dist = Vec2::sub(curr, c->point());
+            auto distSq = dist.i()*dist.i() + dist.j()*dist.j();
+            auto force = (charge.c() < 0 ? -1 : 1) * c->c() / distSq;
+            dir = Vec2::add(
+                dir,
+                Vec2(dist.i() * force, dist.j() * force)
+            );
+        }
+        curr = Vec2::add(
+            curr,
+            dir.scale(7 / dir.length())
+        );
+        path->push_back(curr);
+    }
+}
+
 }
 
 int main(int argc, char* argv[]) {
@@ -142,12 +170,19 @@ int main(int argc, char* argv[]) {
     context->fill();
 
     colors[1].Set(*context);
-    for (auto it = charges.begin(); it != charges.end(); it++) {
-        auto c = *it;
-        auto pt = c->point();
+    for (auto charge : charges) {
+        auto pt = charge->point();
         context->begin_new_path();
-        context->arc(pt.i(), pt.j(), 3, 0, 2 * M_PI);
+        context->arc(pt.i(), pt.j(), 5, 0, 2 * M_PI);
         context->fill();
+    }
+
+    colors[2].Set(*context);
+    context->set_line_width(2.0);
+    for (auto charge : charges) {
+        auto pt = charge->point();
+        context->arc(pt.i(), pt.j(), 5, 0, 2 * M_PI);
+        context->stroke();
     }
 
     std::string dst(basename(argv[0]));

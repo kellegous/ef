@@ -14,11 +14,17 @@ public:
 
     Vec2(Vec2&& v): _i(v._i), _j(v._j) {}
 
-    double i() {
+    Vec2& operator=(const Vec2& v) {
+        _i = v.i();
+        _j = v.j();
+        return *this;
+    }
+
+    double i() const {
         return _i;
     }
 
-    double j() {
+    double j() const {
         return _j;
     }
 
@@ -26,7 +32,7 @@ public:
         return Vec2(0, 0);
     }
 
-    double length();
+    double length() const;
 
     Vec2 scale(double f);
 
