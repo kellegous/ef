@@ -169,6 +169,28 @@ int main(int argc, char* argv[]) {
     context->rectangle(0, 0, width, height);
     context->fill();
 
+    std::vector<Vec2> path;
+    path.reserve(1000);
+    auto charge = charges[0];
+    ComputeFieldLine(
+        &path,
+        *charge,
+        Vec2::add(charge->point(), Vec2(1, 0)),
+        charges);
+
+    context->save(); 
+    colors[3].Set(*context);
+    context->begin_new_path();
+    auto it = path.begin();
+    context->move_to(it->i(), it->j());
+    it++;
+    for (; it != path.end(); it++) {
+        context->line_to(it->i(), it->j());
+    }
+    context->set_line_width(2);
+    context->stroke();
+    context->restore();
+
     colors[1].Set(*context);
     for (auto charge : charges) {
         auto pt = charge->point();
