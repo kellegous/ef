@@ -17,13 +17,6 @@ namespace {
 
 const auto kTau = 2 * M_PI;
 
-void Seed(std::default_random_engine& rng) {
-    auto t = std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::system_clock::now().time_since_epoch()
-    );
-    rng.seed(t.count());
-}
-
 uint64_t SeedFromTime() {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(
         std::chrono::system_clock::now().time_since_epoch()
@@ -107,6 +100,12 @@ public:
 
         return true;
     }
+
+    void Report() {
+        std::cout << "[seed = " << std::hex << seed_
+            << ", color_addr = " << color_addr_ << "]"
+            << std::endl;
+    }
 private:
     uint64_t seed_;
 
@@ -168,9 +167,13 @@ public:
     ColorClient(std::shared_ptr<grpc::Channel> channel)
         : stub_(rpc::Colors::NewStub(channel)) {}
 
-    grpc::Status GetRandomTheme(pkg::Theme* theme) {
+    grpc::Status GetRandomTheme(
+        uint64_t seed,
+        pkg::Theme* theme
+    ) {
         rpc::RandReq req;
         req.set_n(1);
+        req.set_seed(seed);
 
         rpc::RandRes res;
 
@@ -260,14 +263,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    std::cout << "seed = " << options.seed()
-        << " color_addr = " << options.color_addr()
-        << std::endl;
+    options.Report();
 
     auto client = ColorClient::Create(options.color_addr());
 
     pkg::Theme theme;
-    auto status = client->GetRandomTheme(&theme);
+    auto status = client->GetRandomTheme(
+        options.seed(),
+        &theme);
     if (!status.ok()) {
         std::cerr << status.error_code() << ": " << status.error_message() << std::endl;
         return 1;
@@ -275,15 +278,12 @@ int main(int argc, char* argv[]) {
 
     std::vector<Color> colors;
     GetColorsFromTheme(&colors, theme);
-    for (auto color : colors) {
-        std::cout << "#" << color.Hex() << std::endl;
-    }
 
     double width = 1600.0;
     double height = 600.0;
 
     std::default_random_engine rng;
-    Seed(rng);
+    rng.seed(options.seed());
 
     std::vector<std::shared_ptr<Charge>> charges;
     CreateCharges(
