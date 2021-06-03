@@ -3,6 +3,7 @@
 
 #include <cairomm/cairomm.h>
 #include <chrono>
+#include <getopt.h>
 #include <grpcpp/grpcpp.h>
 #include <iomanip>
 #include <iostream>
@@ -42,6 +43,63 @@ void CreateCharges(
         dst->push_back(c);
     }
 }
+
+class Options {
+public:
+    Options(
+        uint64_t seed,
+        const std::string& color_addr)
+        : seed_(seed), color_addr_(color_addr) {}
+
+    Options() : seed_(0) {}
+
+    GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(Options);
+
+    uint64_t seed() const {
+        return seed_;
+    }
+
+    std::string color_addr() const {
+        return color_addr_;
+    }
+
+    bool Parse(int argc, char* argv[]) {
+        int c;
+        struct option long_options[] = {
+            {"seed", required_argument, 0, 's'},
+            {"color_addr", required_argument, 0, 'c'},
+            {0, 0, 0, 0},
+        };
+
+        while (true) {
+            auto option_index = 0;
+
+            c = getopt_long(argc, argv, "s:c:", long_options, &option_index);
+            if (c == -1) {
+                break;
+            }
+
+            switch (c) {
+            case 's':
+                // TODO(knorton): Parse to uint64_t
+                std::cout << "seed = " << optarg << std::endl;
+                break;
+            case 'c':
+                // TODO(knorton): Assign to color_addr
+                std::cout << "color_addr = " << optarg << std::endl;
+                break;
+            case '?':
+                return false;
+            }
+        }
+
+        return true;
+    }
+private:
+    uint64_t seed_;
+
+    std::string color_addr_;
+};
 
 class Color {
 public:
@@ -185,6 +243,11 @@ void ComputeFieldLine(
 }
 
 int main(int argc, char* argv[]) {
+    Options options;
+    if (!options.Parse(argc, argv)) {
+        return 1;
+    }
+
     auto client = ColorClient::Create("192.168.7.23:8081");
 
     pkg::Theme theme;
