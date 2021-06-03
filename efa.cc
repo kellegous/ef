@@ -1,4 +1,6 @@
 #include "charge.h"
+#include "color.h"
+#include "vec2.h"
 #include "pkg/rpc/rpc.grpc.pb.h"
 
 #include <cairomm/cairomm.h>
@@ -112,46 +114,6 @@ private:
     std::string color_addr_;
 };
 
-class Color {
-public:
-    Color(uint32_t rgb): rgb_(rgb) {}
-    Color(const Color& c): rgb_(c.rgb_) {}
-
-    double R() {
-        double r = (rgb_ >> 16) & 0xff;
-        return r / 255.0;
-    }
-
-    double G() {
-        double g = (rgb_ >> 8) & 0xff;
-        return g / 255.0;
-    }
-
-    double B() {
-        double b = rgb_ & 0xff;
-        return b / 255.0;
-    }
-
-    std::string Hex() {
-        std::stringbuf buf;
-        std::ostream os(&buf);
-        os << std::hex << std::setw(6) << std::setfill('0') << rgb_;
-        return buf.str();
-    }
-
-    void Set(Cairo::Context& context) {
-        context.set_source_rgb(R(), G(), B());
-    }
-
-    void SetWithAlpha(
-        Cairo::Context& context,
-        double alpha) {
-        context.set_source_rgba(R(), G(), B(), alpha);
-    }
-private:
-    uint32_t rgb_;
-};
-
 void GetColorsFromTheme(
     std::vector<Color>* colors,
     const pkg::Theme& theme) {
@@ -255,6 +217,22 @@ void ComputeFieldLine(
     }
 }
 
+void SortColors(
+    std::default_random_engine& rng,
+    std::vector<Color>& colors
+) {
+    std::bernoulli_distribution d(0.5);
+    auto fn = d(rng)
+        ? [](const Color& a, const Color& b) -> bool {
+            return a.Luminance() > b.Luminance();
+        }
+        : [](const Color& a, const Color& b) -> bool {
+            return a.Luminance() < b.Luminance();
+        };
+
+        std::sort(colors.begin(), colors.end(), fn);
+}
+
 }
 
 int main(int argc, char* argv[]) {
@@ -276,14 +254,15 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    std::default_random_engine rng;
+    rng.seed(options.seed());
+
     std::vector<Color> colors;
     GetColorsFromTheme(&colors, theme);
+    SortColors(rng, colors);
 
     double width = 1600.0;
     double height = 600.0;
-
-    std::default_random_engine rng;
-    rng.seed(options.seed());
 
     std::vector<std::shared_ptr<Charge>> charges;
     CreateCharges(
@@ -307,10 +286,10 @@ int main(int argc, char* argv[]) {
     std::vector<Vec2> path;
     path.reserve(1000);
     FieldLineOptions opts(4.0);
-    context->set_line_width(3.0);
-    colors[3].SetWithAlpha(*context, 0.5);
+    context->set_line_width(1.0);
+    colors[4].SetWithAlpha(*context, 0.5);
     for (auto charge : charges) {
-        auto da = kTau / 64;
+        auto da = kTau / 128;
         for (auto a = 0.0; a < kTau; a += da) {
             Vec2 off(opts.near() * cos(a), opts.near() * sin(a));
             ComputeFieldLine(
@@ -331,13 +310,18 @@ int main(int argc, char* argv[]) {
     }
     context->restore();
 
-    colors[1].Set(*context);
+    context->save();
+    context->set_line_width(2.0);
     for (auto charge : charges) {
         auto pt = charge->point();
         context->begin_new_path();
-        context->arc(pt.i(), pt.j(), 2, 0, 2 * M_PI);
+        context->arc(pt.i(), pt.j(), 3, 0, 2 * M_PI);
+        colors[0].Set(*context);
         context->fill();
+        colors[4].SetWithAlpha(*context, 0.5);
+        context->stroke();
     }
+    context->restore();
 
     std::string dst(basename(argv[0]));
     dst.append(".png");

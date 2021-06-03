@@ -8,7 +8,7 @@ ALL: efa
 %.o: %.cc %.h
 	g++ $(CFLAGS) -c -o $@ $<
 
-efa: point.o vec2.o charge.o theme.pb.o rpc.pb.o rpc.grpc.pb.o efa.o
+efa: color.o point.o vec2.o charge.o theme.pb.o rpc.pb.o rpc.grpc.pb.o efa.o
 	g++ $(LDFLAGS) -o $@ $^
 
 color/pkg/rpc/rpc.proto:
