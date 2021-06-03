@@ -229,7 +229,7 @@ int main(int argc, char* argv[]) {
     path.reserve(1000);
     FieldLineOptions opts(4.0);
     context->set_line_width(3.0);
-    colors[3].SetWithAlpha(*context, 0.4);
+    colors[3].SetWithAlpha(*context, 0.5);
     for (auto charge : charges) {
         auto da = kTau / 64;
         for (auto a = 0.0; a < kTau; a += da) {
