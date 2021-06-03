@@ -24,6 +24,18 @@ void Seed(std::default_random_engine& rng) {
     rng.seed(t.count());
 }
 
+uint64_t SeedFromTime() {
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::system_clock::now().time_since_epoch()
+    ).count();
+}
+
+bool ParseSeed(uint64_t* v, const std::string& s) {
+    std::istringstream ss(s);
+    ss >> std::hex >> *v;
+    return !ss.fail();
+}
+
 void CreateCharges(
     std::vector<std::shared_ptr<Charge>>* dst,
     std::default_random_engine& rng,
@@ -81,12 +93,12 @@ public:
 
             switch (c) {
             case 's':
-                // TODO(knorton): Parse to uint64_t
-                std::cout << "seed = " << optarg << std::endl;
+                if (!ParseSeed(&seed_, optarg)) {
+                    return false;
+                }
                 break;
             case 'c':
-                // TODO(knorton): Assign to color_addr
-                std::cout << "color_addr = " << optarg << std::endl;
+                color_addr_ = optarg;
                 break;
             case '?':
                 return false;
@@ -243,12 +255,16 @@ void ComputeFieldLine(
 }
 
 int main(int argc, char* argv[]) {
-    Options options;
+    Options options(SeedFromTime(), "192.168.7.23:8081");
     if (!options.Parse(argc, argv)) {
         return 1;
     }
 
-    auto client = ColorClient::Create("192.168.7.23:8081");
+    std::cout << "seed = " << options.seed()
+        << " color_addr = " << options.color_addr()
+        << std::endl;
+
+    auto client = ColorClient::Create(options.color_addr());
 
     pkg::Theme theme;
     auto status = client->GetRandomTheme(&theme);
