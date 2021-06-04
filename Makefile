@@ -3,12 +3,25 @@ CFLAGS := -std=c++17 -Wall -I. \
 LDFLAGS := -Wall -lgrpc++_reflection -lpthread \
 	$(shell PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig pkg-config cairomm-1.16 grpc++ protobuf --libs)
 
-ALL: efa
+OBJS := charge.o \
+	color.o \
+	color_client.o \
+	point.o \
+	rpc.pb.o \
+	rpc.grpc.pb.o \
+	seed.o \
+	theme.pb.o \
+	vec2.o 
+
+ALL: efa clr
 
 %.o: %.cc %.h
 	g++ $(CFLAGS) -c -o $@ $<
 
-efa: color.o color_client.o point.o vec2.o charge.o theme.pb.o rpc.pb.o rpc.grpc.pb.o efa.o
+clr: $(OBJS) clr.o 
+	g++ $(LDFLAGS) -o $@ $^
+
+efa: $(OBJS) efa.o
 	g++ $(LDFLAGS) -o $@ $^
 
 color/pkg/rpc/rpc.proto:
@@ -36,4 +49,4 @@ theme.pb.o: pkg/theme.pb.cc
 	g++ -c $(CFLAGS) -o $@ $<
 
 clean:
-	rm -f efa *.o
+	rm -f efa clr *.o

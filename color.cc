@@ -1,8 +1,11 @@
 #include "color.h"
 
+#include "pkg/theme.pb.h"
+
 #include <iomanip>
 #include <string>
 #include <sstream>
+#include <vector>
 
 double Color::R() const {
     double r = (rgb_ >> 16) & 0xff;
@@ -36,4 +39,15 @@ void Color::Set(Cairo::Context& context) const {
 
 void Color::SetWithAlpha(Cairo::Context& context, double alpha) const {
     context.set_source_rgba(R(), G(), B(), alpha);
+}
+
+void Color::GetAllFromTheme(
+    std::vector<Color>* colors,
+    const pkg::Theme& theme
+) {
+    colors->clear();
+    colors->reserve(theme.swatches_size());
+    for (auto c : theme.swatches()) {
+        colors->push_back(Color(c));
+    }
 }

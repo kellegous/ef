@@ -1,13 +1,12 @@
 #include "charge.h"
 #include "color.h"
 #include "color_client.h"
+#include "seed.h"
 #include "vec2.h"
-#include "pkg/rpc/rpc.grpc.pb.h"
 
 #include <cairomm/cairomm.h>
 #include <chrono>
 #include <getopt.h>
-#include <grpcpp/grpcpp.h>
 #include <iomanip>
 #include <iostream>
 #include <libgen.h>
@@ -19,18 +18,6 @@
 namespace {
 
 const auto kTau = 2 * M_PI;
-
-uint64_t SeedFromTime() {
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(
-        std::chrono::system_clock::now().time_since_epoch()
-    ).count();
-}
-
-bool ParseSeed(uint64_t* v, const std::string& s) {
-    std::istringstream ss(s);
-    ss >> std::hex >> *v;
-    return !ss.fail();
-}
 
 void CreateCharges(
     std::vector<std::shared_ptr<Charge>>* dst,
@@ -89,7 +76,7 @@ public:
 
             switch (c) {
             case 's':
-                if (!ParseSeed(&seed_, optarg)) {
+                if (!seed::Parse(&seed_, optarg)) {
                     return false;
                 }
                 break;
@@ -114,16 +101,6 @@ private:
 
     std::string color_addr_;
 };
-
-void GetColorsFromTheme(
-    std::vector<Color>* colors,
-    const pkg::Theme& theme) {
-    colors->clear();
-    colors->reserve(theme.swatches_size());
-    for (auto c : theme.swatches()) {
-        colors->push_back(Color(c));
-    }
-}
 
 class FieldLineOptions {
 public:
@@ -203,7 +180,7 @@ void SortColors(
 }
 
 int main(int argc, char* argv[]) {
-    Options options(SeedFromTime(), "192.168.7.23:8081");
+    Options options(seed::FromTime(), "192.168.7.23:8081");
     if (!options.Parse(argc, argv)) {
         return 1;
     }
@@ -225,7 +202,7 @@ int main(int argc, char* argv[]) {
     rng.seed(options.seed());
 
     std::vector<Color> colors;
-    GetColorsFromTheme(&colors, theme);
+    Color::GetAllFromTheme(&colors, theme);
     SortColors(rng, colors);
 
     double width = 1600.0;

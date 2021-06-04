@@ -4,6 +4,10 @@
 #include <cairomm/cairomm.h>
 #include <cinttypes>
 
+namespace pkg {
+    class Theme;
+}
+
 class Color {
 public:
     Color(uint32_t rgb): rgb_(rgb) {}
@@ -20,6 +24,10 @@ public:
     void SetWithAlpha(
         Cairo::Context& context,
         double alpha) const;
+
+    static void GetAllFromTheme(
+        std::vector<Color>* colors,
+        const pkg::Theme& theme);
 private:
     uint32_t rgb_;
 };
