@@ -5,14 +5,12 @@
 #include "vec2.h"
 
 #include <cairomm/cairomm.h>
-#include <chrono>
 #include <getopt.h>
 #include <iomanip>
 #include <iostream>
 #include <libgen.h>
 #include <memory>
 #include <random>
-#include <sstream>
 #include <vector>
 
 namespace {
