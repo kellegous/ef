@@ -66,13 +66,14 @@ public:
         struct option long_options[] = {
             {"seed", required_argument, 0, 's'},
             {"color_addr", required_argument, 0, 'c'},
+            {"dst", required_argument, 0, 'd'},
             {0, 0, 0, 0},
         };
 
         while (true) {
             auto option_index = 0;
 
-            c = getopt_long(argc, argv, "s:c:", long_options, &option_index);
+            c = getopt_long(argc, argv, "s:c:d:", long_options, &option_index);
             if (c == -1) {
                 break;
             }
@@ -85,6 +86,9 @@ public:
                 break;
             case 'c':
                 color_addr_ = optarg;
+                break;
+            case 'd':
+                dst_ = optarg;
                 break;
             case '?':
                 return false;
