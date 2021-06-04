@@ -1,5 +1,6 @@
 #include "charge.h"
 #include "color.h"
+#include "color_client.h"
 #include "vec2.h"
 #include "pkg/rpc/rpc.grpc.pb.h"
 
@@ -124,40 +125,6 @@ void GetColorsFromTheme(
     }
 }
 
-class ColorClient {
-public:
-    ColorClient(std::shared_ptr<grpc::Channel> channel)
-        : stub_(rpc::Colors::NewStub(channel)) {}
-
-    grpc::Status GetRandomTheme(
-        uint64_t seed,
-        pkg::Theme* theme
-    ) {
-        rpc::RandReq req;
-        req.set_n(1);
-        req.set_seed(seed);
-
-        rpc::RandRes res;
-
-        grpc::ClientContext context;
-
-        grpc::Status status = stub_->GetRandom(&context, req, &res);
-        if (!status.ok()) {
-            return status;
-        }
-
-        theme->CopyFrom(res.themes().Get(0));
-        return status;
-    }
-
-    static std::unique_ptr<ColorClient> Create(const std::string& addr) {
-        return std::unique_ptr<ColorClient>(
-            new ColorClient(grpc::CreateChannel(addr, grpc::InsecureChannelCredentials())));
-    }
-private:
-    std::unique_ptr<rpc::Colors::Stub> stub_;
-};
-
 class FieldLineOptions {
 public:
     FieldLineOptions(double near)
@@ -247,8 +214,8 @@ int main(int argc, char* argv[]) {
 
     pkg::Theme theme;
     auto status = client->GetRandomTheme(
-        options.seed(),
-        &theme);
+        &theme,
+        options.seed());
     if (!status.ok()) {
         std::cerr << status.error_code() << ": " << status.error_message() << std::endl;
         return 1;
