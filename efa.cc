@@ -41,10 +41,11 @@ class Options {
 public:
     Options(
         uint64_t seed,
-        const std::string& color_addr)
-        : seed_(seed), color_addr_(color_addr) {}
-
-    Options() : seed_(0) {}
+        const std::string& color_addr,
+        const std::string& dst)
+        : seed_(seed),
+          color_addr_(color_addr),
+          dst_(dst) {}
 
     GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(Options);
 
@@ -54,6 +55,10 @@ public:
 
     std::string color_addr() const {
         return color_addr_;
+    }
+
+    std::string dst() {
+        return dst_;
     }
 
     bool Parse(int argc, char* argv[]) {
@@ -98,6 +103,8 @@ private:
     uint64_t seed_;
 
     std::string color_addr_;
+
+    std::string dst_;
 };
 
 class FieldLineOptions {
@@ -175,10 +182,19 @@ void SortColors(
         std::sort(colors.begin(), colors.end(), fn);
 }
 
+std::string GetDefaultDest(char* cmd) {
+    std::string dst(basename(cmd));
+    dst.append(".png");
+    return dst;
+}
+
 }
 
 int main(int argc, char* argv[]) {
-    Options options(seed::FromTime(), "192.168.7.23:8081");
+    Options options(
+        seed::FromTime(),
+        "192.168.7.23:8081",
+        GetDefaultDest(argv[0]));
     if (!options.Parse(argc, argv)) {
         return 1;
     }
@@ -265,9 +281,7 @@ int main(int argc, char* argv[]) {
     }
     context->restore();
 
-    std::string dst(basename(argv[0]));
-    dst.append(".png");
-    surface->write_to_png(dst.c_str());
+    surface->write_to_png(options.dst().c_str());
 
     return 0;
 }
