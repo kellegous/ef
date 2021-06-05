@@ -6,6 +6,7 @@ LDFLAGS := -Wall -lgrpc++_reflection -lpthread \
 OBJS := charge.o \
 	color.o \
 	color_client.o \
+	ef.o \
 	point.o \
 	rpc.pb.o \
 	rpc.grpc.pb.o \
