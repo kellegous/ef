@@ -1,15 +1,12 @@
-#include "efa.h"
+#include "efb.h"
 
 #include "charge.h"
 #include "color.h"
 #include "color_client.h"
 #include "ef.h"
-#include "seed.h"
-#include "vec2.h"
 
 #include <cairomm/cairomm.h>
-#include <iostream>
-#include <memory>
+#include <math.h>
 #include <random>
 #include <vector>
 
@@ -27,8 +24,9 @@ int main(int argc, char* argv[]) {
 
     options.Report();
 
-    auto client = ColorClient::Create(options.color_addr());
-
+    auto client = ColorClient::Create(
+        options.color_addr());
+    
     pkg::Theme theme;
     auto status = client->GetRandomTheme(
         &theme,
@@ -48,13 +46,14 @@ int main(int argc, char* argv[]) {
     double width = 1600.0;
     double height = 600.0;
 
+    std::uniform_int_distribution<int> ndist(20, 100);
     std::vector<std::shared_ptr<Charge>> charges;
     ef::CreateCharges(
         &charges,
         rng,
         width,
         height,
-        20);
+        ndist(rng));
 
     auto surface = Cairo::ImageSurface::create(
         Cairo::ImageSurface::Format::ARGB32,
@@ -70,7 +69,6 @@ int main(int argc, char* argv[]) {
     std::vector<Vec2> path;
     path.reserve(1000);
     ef::FieldLineOptions opts(4.0);
-    context->set_line_width(1.0);
     colors[4].SetWithAlpha(*context, 0.5);
     for (auto charge : charges) {
         auto da = kTau / 128;
@@ -82,28 +80,12 @@ int main(int argc, char* argv[]) {
                 *charge,
                 Vec2::add(charge->point(), off),
                 charges);
-            context->begin_new_path();
-            auto it = path.begin();
-            context->move_to(it->i(), it->j());
-            it++;
-            for (; it != path.end(); it++) {
-                context->line_to(it->i(), it->j());
+            for (auto pt : path) {
+                context->begin_new_path();
+                context->arc(pt.i(), pt.j(), 1, 0, kTau);
+                context->fill();
             }
-            context->stroke();
         }
-    }
-    context->restore();
-
-    context->save();
-    context->set_line_width(2.0);
-    for (auto charge : charges) {
-        auto pt = charge->point();
-        context->begin_new_path();
-        context->arc(pt.i(), pt.j(), 3, 0, 2 * M_PI);
-        colors[0].Set(*context);
-        context->fill();
-        colors[4].SetWithAlpha(*context, 0.5);
-        context->stroke();
     }
     context->restore();
 

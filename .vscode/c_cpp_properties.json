@@ -41,7 +41,7 @@
                 "/usr/local/Cellar/openssl@1.1/1.1.1k/include", 
                 "/usr/local/Cellar/pcre/8.44/include", 
                 "/usr/local/Cellar/pixman/0.40.0/include/pixman-1", 
-                "/usr/local/Cellar/protobuf/3.17.1/include", 
+                "/usr/local/Cellar/protobuf/3.17.2/include", 
                 "/usr/local/Cellar/xorgproto/2021.4/include", 
                 "/usr/local/opt/freetype/include/freetype2", 
                 "/usr/local/opt/gettext/include"

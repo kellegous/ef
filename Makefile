@@ -14,7 +14,7 @@ OBJS := charge.o \
 	theme.pb.o \
 	vec2.o 
 
-ALL: efa clr
+ALL: efa clr efb
 
 %.o: %.cc %.h
 	g++ $(CFLAGS) -c -o $@ $<
@@ -23,6 +23,9 @@ clr: $(OBJS) clr.o
 	g++ $(LDFLAGS) -o $@ $^
 
 efa: $(OBJS) efa.o
+	g++ $(LDFLAGS) -o $@ $^
+
+efb: $(OBJS) efb.o
 	g++ $(LDFLAGS) -o $@ $^
 
 color/pkg/rpc/rpc.proto:
