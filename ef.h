@@ -23,7 +23,7 @@ void CreateCharges(
 class FieldLineOptions {
 public:
     FieldLineOptions(double near)
-        : near_(near) {}
+        : near_(near)  {}
 
     GOOGLE_DISALLOW_IMPLICIT_CONSTRUCTORS(FieldLineOptions);
 

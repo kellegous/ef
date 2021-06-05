@@ -46,7 +46,7 @@ int main(int argc, char* argv[]) {
     double width = 1600.0;
     double height = 600.0;
 
-    std::uniform_int_distribution<int> ndist(50, 200);
+    std::uniform_int_distribution<int> ndist(50, 150);
     std::vector<std::shared_ptr<Charge>> charges;
     int n = ndist(rng);
     std::cout << "n = " << n << std::endl;
@@ -70,11 +70,12 @@ int main(int argc, char* argv[]) {
     context->save();
     std::vector<Vec2> path;
     path.reserve(1000);
-    ef::FieldLineOptions opts(4.0);
-    colors[4].SetWithAlpha(*context, 0.5);
+    ef::FieldLineOptions opts(2.0);
+    colors[4].Set(*context);
+    std::uniform_real_distribution<double> adist(0.0, kTau);
     for (auto charge : charges) {
-        auto da = kTau / 128;
-        for (auto a = 0.0; a < kTau; a += da) {
+        for (auto i = 0; i < 64; i++) {
+            auto a = adist(rng);
             Vec2 off(opts.near() * cos(a), opts.near() * sin(a));
             ef::ComputeFieldLine(
                 &path,
