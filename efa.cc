@@ -48,13 +48,14 @@ int main(int argc, char* argv[]) {
     double width = 1600.0;
     double height = 600.0;
 
+    std::uniform_int_distribution<int> ndist(50, 150);
     std::vector<std::shared_ptr<Charge>> charges;
     ef::CreateCharges(
         &charges,
         rng,
         width,
         height,
-        20);
+        ndist(rng));
 
     auto surface = Cairo::ImageSurface::create(
         Cairo::ImageSurface::Format::ARGB32,
@@ -73,7 +74,7 @@ int main(int argc, char* argv[]) {
     context->set_line_width(1.0);
     colors[4].SetWithAlpha(*context, 0.5);
     for (auto charge : charges) {
-        auto da = kTau / 128;
+        auto da = kTau / 64;
         for (auto a = 0.0; a < kTau; a += da) {
             Vec2 off(opts.near() * cos(a), opts.near() * sin(a));
             ef::ComputeFieldLine(

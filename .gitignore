@@ -1,5 +1,7 @@
 /efa
+/efb
 /clr
 *.o
 /color
 /pkg
+/*.png
