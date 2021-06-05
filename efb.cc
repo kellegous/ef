@@ -46,14 +46,16 @@ int main(int argc, char* argv[]) {
     double width = 1600.0;
     double height = 600.0;
 
-    std::uniform_int_distribution<int> ndist(20, 100);
+    std::uniform_int_distribution<int> ndist(50, 200);
     std::vector<std::shared_ptr<Charge>> charges;
+    int n = ndist(rng);
+    std::cout << "n = " << n << std::endl;
     ef::CreateCharges(
         &charges,
         rng,
         width,
         height,
-        ndist(rng));
+        n);
 
     auto surface = Cairo::ImageSurface::create(
         Cairo::ImageSurface::Format::ARGB32,
@@ -82,7 +84,7 @@ int main(int argc, char* argv[]) {
                 charges);
             for (auto pt : path) {
                 context->begin_new_path();
-                context->arc(pt.i(), pt.j(), 1, 0, kTau);
+                context->arc(pt.i(), pt.j(), 1.0, 0, kTau);
                 context->fill();
             }
         }

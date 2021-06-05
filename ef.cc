@@ -150,7 +150,7 @@ bool Options::Parse(int argc, char* argv[]) {
 }
 
 void Options::Report() {
-    std::cout << "[seed = " << std::hex << seed_
+    std::cout << "[seed = " << std::hex << seed_ << std::dec
         << ", color_addr = " << color_addr_ << "]"
         << std::endl;
 }
