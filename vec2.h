@@ -6,13 +6,13 @@ private:
     double _i;
     double _j;
 public:
-    Vec2(double i, double j): _i(i), _j(j) {}
+    Vec2(double i, double j) noexcept: _i(i), _j(j) {}
 
-    Vec2(Vec2& v): _i(v._i), _j(v._j) {}
+    Vec2(Vec2& v) noexcept: _i(v._i), _j(v._j) {}
 
-    Vec2(const Vec2& v): _i(v._i), _j(v._j) {}
+    Vec2(const Vec2& v) noexcept: _i(v._i), _j(v._j) {}
 
-    Vec2(Vec2&& v): _i(v._i), _j(v._j) {}
+    Vec2(Vec2&& v) noexcept: _i(v._i), _j(v._j) {}
 
     Vec2& operator=(const Vec2& v) {
         _i = v.i();

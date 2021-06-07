@@ -10,8 +10,8 @@ namespace pkg {
 
 class Color {
 public:
-    Color(uint32_t rgb): rgb_(rgb) {}
-    Color(const Color& c): rgb_(c.rgb_) {}
+    Color(uint32_t rgb) noexcept: rgb_(rgb) {}
+    Color(const Color& c) noexcept: rgb_(c.rgb_) {}
 
     double R() const;
     double G() const;

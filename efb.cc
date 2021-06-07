@@ -71,10 +71,11 @@ int main(int argc, char* argv[]) {
     std::vector<Vec2> path;
     path.reserve(1000);
     ef::FieldLineOptions opts(2.0);
-    colors[4].Set(*context);
+    // colors[4].Set(*context);
+    colors[4].SetWithAlpha(*context, 0.5);
     std::uniform_real_distribution<double> adist(0.0, kTau);
     for (auto charge : charges) {
-        for (auto i = 0; i < 64; i++) {
+        for (auto i = 0; i < 128; i++) {
             auto a = adist(rng);
             Vec2 off(opts.near() * cos(a), opts.near() * sin(a));
             ef::ComputeFieldLine(
