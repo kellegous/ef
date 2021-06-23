@@ -16,7 +16,7 @@ OBJS := charge.o \
 
 ALL: efa clr efb
 
-%.o: %.cc %.h
+%.o: %.cc %.h theme.pb.o rpc.pb.o rpc.grpc.pb.o
 	g++ $(CFLAGS) -c -o $@ $<
 
 clr: $(OBJS) clr.o 
@@ -53,4 +53,4 @@ theme.pb.o: pkg/theme.pb.cc
 	g++ -c $(CFLAGS) -o $@ $<
 
 clean:
-	rm -f efa clr *.o
+	rm -rf efa clr *.o pkg
