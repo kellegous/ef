@@ -5,12 +5,14 @@
 Charge::Charge(
     double i,
     double j,
-    double c): _point(i, j), _c(c) {
+    double c) noexcept
+    : _point(i, j), _c(c) {
 }
 
 Charge::Charge(
     const Vec2& point,
-    double c): _point(point), _c(c) {
+    double c) noexcept
+    : _point(point), _c(c) {
 }
 
 Vec2 Charge::point() const {

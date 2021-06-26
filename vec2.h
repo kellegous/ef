@@ -12,8 +12,6 @@ public:
 
     Vec2(const Vec2& v) noexcept: _i(v._i), _j(v._j) {}
 
-    Vec2(Vec2&& v) noexcept: _i(v._i), _j(v._j) {}
-
     Vec2& operator=(const Vec2& v) {
         _i = v.i();
         _j = v.j();

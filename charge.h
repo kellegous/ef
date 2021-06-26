@@ -7,11 +7,10 @@
 
 class Charge {
 public:
-    Charge(double i, double j, double c);
-    Charge(const Vec2& point, double c);
+    Charge(double i, double j, double c) noexcept;
+    Charge(const Vec2& point, double c) noexcept;
 
-    // Disallow copy
-    Charge(const Charge&);
+    Charge(const Charge&) = delete;
 
     Vec2 point() const;
     double c() const;
