@@ -1,7 +1,10 @@
+HOMEBREW_PREFIX := $(shell brew --prefix)
+
 CFLAGS := -std=c++17 -Wall -I. \
-	$(shell PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig pkg-config cairomm-1.16 grpc protobuf --cflags)
+	$(shell PKG_CONFIG_PATH=$(HOMEBREW_PREFIX)/opt/openssl/lib/pkgconfig pkg-config cairomm-1.16 grpc protobuf --cflags)
 LDFLAGS := -Wall -lgrpc++_reflection -lpthread \
-	$(shell PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig pkg-config cairomm-1.16 grpc++ protobuf --libs)
+	-L$(HOMEBREW_PREFIX)/lib \
+	$(shell PKG_CONFIG_PATH=$(HOMEBREW_PREFIX)/opt/openssl/lib/pkgconfig pkg-config cairomm-1.16 grpc++ protobuf --libs)
 
 OBJS := charge.o \
 	color.o \
